@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ModalContextProvider } from '@contexts/ModalContext';
 
 import './scss/global.scss';
 
@@ -10,7 +11,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <ModalContextProvider>
+      <App />
+    </ModalContextProvider>
   </React.StrictMode>
 );
 
