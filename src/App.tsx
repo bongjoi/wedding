@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import FullScreenMessage from '@shared/FullScreenMessage';
@@ -13,50 +12,19 @@ import Contact from '@components/sections/Contact';
 import Share from '@components/sections/Share';
 import AttendCountModal from '@components/AttendCountModal';
 
-import { Wedding } from '@models/wedding';
-
+import useWedding from './hooks/useWedding';
 import styles from './App.module.scss';
 
 const cx = classNames.bind(styles);
 
 function App() {
-  const [wedding, setWedding] = useState<Wedding | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    setLoading(true);
-
-    fetch('http://localhost:8888/wedding')
-      .then((response) => {
-        if (response.ok === false) {
-          throw new Error('청첩장 정보를 불러오지 못했습니다.');
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setWedding(data);
-      })
-      .catch((e) => {
-        console.log('에러발생', e);
-        setError(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <FullScreenMessage type="loading" />;
-  }
+  const { wedding, error } = useWedding();
 
   if (error) {
     return <FullScreenMessage type="error" />;
   }
 
-  if (wedding === null) {
+  if (wedding === undefined) {
     return null;
   }
 
@@ -71,17 +39,6 @@ function App() {
 
   return (
     <div className={cx('container')}>
-      <button
-        style={{
-          position: 'fixed',
-          top: 0
-        }}
-        onClick={() => {
-          setCount((prev) => prev + 1);
-        }}
-      >
-        + {count}
-      </button>
       <Heading date={date} />
       <Video />
       <Intro
